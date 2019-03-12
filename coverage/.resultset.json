@@ -18,10 +18,41 @@
         1,
         null,
         null,
+        1,
+        1,
+        null,
+        null,
         null
       ],
       "/Users/juliamarcooteros/turing/3module/projects/rails_engine/app/controllers/application_controller.rb": [
         1,
+        null
+      ],
+      "/Users/juliamarcooteros/turing/3module/projects/rails_engine/app/controllers/api/v1/merchants/find_controller.rb": [
+        1,
+        null,
+        1,
+        4,
+        null,
+        null,
+        1,
+        2,
+        null,
+        null,
+        1,
+        1,
+        6,
+        null,
+        null,
+        null
+      ],
+      "/Users/juliamarcooteros/turing/3module/projects/rails_engine/app/controllers/api/v1/merchants/random_controller.rb": [
+        1,
+        null,
+        1,
+        1,
+        null,
+        null,
         null
       ],
       "/Users/juliamarcooteros/turing/3module/projects/rails_engine/app/mailers/application_mailer.rb": [
@@ -47,6 +78,6 @@
         0
       ]
     },
-    "timestamp": 1552411920
+    "timestamp": 1552426161
   }
 }
