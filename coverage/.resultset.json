@@ -11,11 +11,18 @@
         1,
         null
       ],
-      "/Users/juliamarcooteros/turing/3module/projects/rails_engine/app/controllers/api/v1/merchants_controller.rb": [
+      "/Users/juliamarcooteros/turing/3module/projects/rails_engine/app/controllers/api/v1/merchants/find_controller.rb": [
         1,
         null,
         1,
+        null,
+        4,
+        null,
+        null,
         1,
+        1,
+        4,
+        null,
         null,
         null,
         null
@@ -34,6 +41,19 @@
         0,
         0
       ],
+      "/Users/juliamarcooteros/turing/3module/projects/rails_engine/app/controllers/api/v1/merchants_controller.rb": [
+        0,
+        null,
+        0,
+        0,
+        0,
+        null,
+        0,
+        0,
+        0,
+        null,
+        0
+      ],
       "/Users/juliamarcooteros/turing/3module/projects/rails_engine/app/channels/application_cable/connection.rb": [
         0,
         0,
@@ -47,6 +67,6 @@
         0
       ]
     },
-    "timestamp": 1552411920
+    "timestamp": 1552422701
   }
 }
