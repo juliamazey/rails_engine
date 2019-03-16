@@ -28,6 +28,7 @@ namespace :import do
     CSV.foreach("./lib/transactions.csv", headers: true) do |row|
       Transaction.create(row.to_h)
     end
+    puts "created transactions"
   end
 end
 
@@ -42,10 +43,10 @@ namespace :import do
 end
 
 namespace :import do
-  desc "Import invoice_items from CSV file"
+  desc "Import invoice items from CSV file"
 
-  task invoice_items: :environment do
-    CSV.foreach("./lib/invoice_items.csv", headers: true) do |row|
+  task invoiceitems: :environment do
+    CSV.foreach("./lib/invoiceitems.csv", headers: true) do |row|
       InvoiceItem.create(row.to_h)
     end
   end
