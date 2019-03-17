@@ -1,14 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Merchant, type: :model do
-  describe 'relationships' do
-    it { should have_many :items }
-    it { should have_many :invoices }
-  end
-
-  describe 'validations' do
-    it { should validate_presence_of :name }
-  end
+describe 'Merchants Business Intelligence API' do
   before :each do
     @merchant_1 = create(:merchant)
     @merchant_2 = create(:merchant)
@@ -45,36 +37,80 @@ RSpec.describe Merchant, type: :model do
     @transaction_5 = create(:transaction, invoice_id: @invoice_5.id)
     @transaction_6 = create(:transaction, invoice_id: @invoice_6.id)
   end
-  describe 'class methods' do
-    it '.top_by_revenue' do
-      expect(Merchant.top_by_revenue).to eq([@merchant_2, @merchant_3, @merchant_1])
-    end
+  it 'returns the top x merchants ranked by total revenue' do
 
-    it '.top_by_items_sold' do
-      expect(Merchant.top_by_items_sold).to eq([@merchant_2, @merchant_1, @merchant_3])
-    end
+    get "/api/v1/merchants/most_revenue?quantity=3"
 
-    it '.total_revenue_by_date' do
-      date = "2019-03-13"
-      total = 1.8
-      expect(Merchant.total_revenue_by_date(date)).to eq(total)
-    end
+    expect(response).to be_successful
+    top_merchants = JSON.parse(response.body)["data"]
+    expect(top_merchants.count).to eq(3)
+
+    top_merchants_ids = top_merchants.map {|merchant| merchant["id"].to_i}
+
+    expect(top_merchants_ids).to eq([@merchant_2.id, @merchant_3.id, @merchant_1.id])
   end
 
-  describe 'instance methods' do
-    it '.total_revenue' do
-      total = 1.0
-      expect(@merchant_2.total_revenue).to eq(total)
-    end
+  it 'returns the top x merchants ranked by total number of items sold' do
 
-    it '.total_revenue_by_date' do
-      date = "2019-03-13"
-      total = 1.0
-      expect(@merchant_2.total_revenue_by_date(date)).to eq(total)
-    end
+    get "/api/v1/merchants/most_items?quantity=3"
 
-    it 'favorite_customer' do
-      expect(@merchant_1.favorite_customer).to eq(@customer_2)
-    end
+    expect(response).to be_successful
+
+    top_merchants = JSON.parse(response.body)["data"]
+    expect(top_merchants.count).to eq(3)
+
+    top_merchants_ids = top_merchants.map {|merchant| merchant["id"].to_i}
+
+    expect(top_merchants_ids).to eq([@merchant_2.id, @merchant_1.id, @merchant_3.id])
+
   end
+
+  it 'returns the total revenue for a date x across all merchants' do
+
+    date = "2019-03-13"
+
+
+    get "/api/v1/merchants/revenue?date=#{date}"
+
+    expect(response).to be_successful
+
+    total = JSON.parse(response.body)["data"]["attributes"]["total_revenue"]
+
+    expect(total).to eq("1.8")
+  end
+
+
+  it 'returns the total revenue for a single merchant' do
+
+    get "/api/v1/merchants/#{@merchant_1.id}/revenue"
+
+
+    expect(response).to be_successful
+
+    revenue = JSON.parse(response.body)["data"]["attributes"]["revenue"]
+
+    expect(revenue).to eq("0.28")
+  end
+
+  it 'returns the total revenue for a merchant for a specific date' do
+    date = @invoice_2.created_at
+
+    get "/api/v1/merchants/#{@merchant_1.id}/revenue?date=#{date}"
+
+    expect(response).to be_successful
+
+    revenue = JSON.parse(response.body)["data"]["attributes"]["revenue"]
+    expect(revenue).to eq("0.14")
+  end
+
+  it 'returns the customer who has most total number of successful transactions' do
+
+    get "/api/v1/merchants/#{@merchant_1.id}/favorite_customer"
+
+    expect(response).to be_successful
+
+    customer = JSON.parse(response.body)["data"]
+    expect(customer["id"].to_i).to eq(@customer_2.id)
+  end
+
 end

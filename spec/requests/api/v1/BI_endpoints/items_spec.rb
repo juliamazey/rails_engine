@@ -1,18 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Item, type: :model do
-  describe 'relationships' do
-    it { should belong_to :merchant }
-    it { should have_many :invoice_items }
-    it { should have_many :invoices }
-  end
-
-  describe 'validations' do
-    it { should validate_presence_of :name }
-    it { should validate_presence_of :description }
-    it { should validate_presence_of :unit_price }
-  end
-
+describe 'Items Business Intelligence API' do
   before :each do
     @merchant_1 = create(:merchant)
     @merchant_2 = create(:merchant)
@@ -30,7 +18,7 @@ RSpec.describe Item, type: :model do
 
     @invoice_1 = create(:invoice, merchant_id: @merchant_1.id, customer_id: @customer_1.id)
     @invoice_2 = create(:invoice, merchant_id: @merchant_1.id, created_at: "2019-03-10 07:13:13 UTC", customer_id: @customer_2.id)
-    @invoice_3 = create(:invoice, merchant_id: @merchant_1.id, customer_id: @customer_2.id, created_at: "2019-03-13 07:13:13 UTC")
+    @invoice_3 = create(:invoice, merchant_id: @merchant_1.id, customer_id: @customer_2.id)
     @invoice_4 = create(:invoice, merchant_id: @merchant_2.id, created_at: "2019-03-13 07:13:13 UTC")
     @invoice_5 = create(:invoice, merchant_id: @merchant_3.id, created_at: "2019-03-13 23:13:13 UTC")
     @invoice_6 = create(:invoice, merchant_id: @merchant_4.id)
@@ -50,21 +38,38 @@ RSpec.describe Item, type: :model do
     @transaction_6 = create(:transaction, invoice_id: @invoice_6.id)
   end
 
-  describe 'class methods' do
+  it 'returns the top x items ranked by total revenue generated' do
 
-    it '.top_by_revenue' do
-      expect(Item.top_by_revenue).to eq([@item_3, @item_4, @item_1])
-    end
+    get "/api/v1/items/most_revenue?quantity=3"
 
-    it '.top_by_number_sold' do
-      expect(Item.top_by_number_sold).to eq([@item_3, @item_1, @item_4])
-    end
+    expect(response).to be_successful
 
-    it '.best_day' do
-      expect(Item.best_day(@item_1.id)).to eq("2019-03-13")
-    end
+    items = JSON.parse(response.body)["data"]
+    # items_ids = items.map {|item| item["id"].to_i}
 
+    # expect(items_ids).to eq([@item_3.id, @item_4.id, @item_1.id])
+  end
 
+  it 'returns the top x item instances ranked by total number sold' do
+
+    get "/api/v1/items/most_items?quantity=3"
+
+    expect(response).to be_successful
+
+    items = JSON.parse(response.body)["data"]
+
+    items_ids = items.map {|item| item["id"].to_i}
+
+    expect(items_ids).to eq([@item_3.id, @item_1.id, @item_4.id])
+  end
+
+  it 'returns the date with the most sales for the given item using the invoice date' do
+
+    get "/api/v1/items/#{@item_1.id}/best_day"
+
+    expect(response).to be_successful
+
+    date = JSON.parse(response.body)
 
   end
 
