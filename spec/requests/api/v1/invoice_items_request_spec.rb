@@ -41,9 +41,9 @@ describe "Invoice Items API" do
     expect(invoice_items.count).to eq(4)
   end
 
-  it "can get one item by its id" do
+  it "can get one invoice item by its id" do
 
-    get "/api/v1/items/#{@invoice_item_1.id}"
+    get "/api/v1/invoice_items/#{@invoice_item_1.id}"
     invoice_item = JSON.parse(response.body)["data"]
 
     expect(response).to be_successful
@@ -132,14 +132,14 @@ describe "Invoice Items API" do
 
   it "can return a random resource" do
 
-    items_names = [@item_1.name, @item_2.name, @item_3.name]
+    invoice_items_ids = [@invoice_item_1.id, @invoice_item_2.id, @invoice_item_3.id]
 
-    get "/api/v1/items/random"
+    get "/api/v1/invoice_items/random"
 
-    item = JSON.parse(response.body)["data"]
+    invoice_item = JSON.parse(response.body)["data"]
 
     expect(response).to be_successful
-    expect(items_names).to include(item["attributes"]["name"])
+    expect(invoice_items_ids).to include(invoice_item["attributes"]["id"])
   end
 
   it "can return the associated invoice for an invoice item" do

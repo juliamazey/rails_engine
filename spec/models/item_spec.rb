@@ -53,7 +53,7 @@ RSpec.describe Item, type: :model do
   describe 'class methods' do
 
     it '.top_by_revenue' do
-      expect(Item.top_by_revenue).to eq([@item_3, @item_4, @item_1])
+      expect(Item.top_by_revenue(3)).to eq([@item_3, @item_4, @item_1])
     end
 
     it '.top_by_number_sold' do

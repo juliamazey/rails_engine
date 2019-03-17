@@ -69,6 +69,7 @@ class Merchant < ApplicationRecord
     .group(:id)
     .order("merchant_count DESC")
     .limit(1)[0]
+    
   end
 
 

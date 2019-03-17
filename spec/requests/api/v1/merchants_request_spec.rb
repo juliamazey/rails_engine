@@ -116,12 +116,13 @@ describe "Merchants API" do
     get "/api/v1/merchants/#{merchant.id}/items"
     merchant_items = JSON.parse(response.body)["data"]
 
+    merchant_items_names = merchant_items.all? { |item| items_names.include?(item["attributes"]["name"])}
+
     expect(response).to be_successful
     expect(merchant_items.count).to eq(4)
 
-    m_i_names = merchant_items.map { |item| item["attributes"]["name"] }
 
-    expect(items_names).to eq(m_i_names)
+    expect(merchant_items_names).to eq(true)
   end
 
   it "can return invoices associated with a merchant" do
