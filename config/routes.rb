@@ -20,7 +20,6 @@ Rails.application.routes.draw do
         end
       end
 
-
       namespace :items do
         get 'find', to: 'find#show'
         get 'find_all', to: 'find#index'
@@ -28,6 +27,12 @@ Rails.application.routes.draw do
         get 'most_revenue', to: "most_revenues#index"
         get 'most_items', to: "most_items#index"
         get ':id/best_day', to: "best_day#show"
+      end
+
+      namespace :invoice_items do
+        get 'find', to: 'find#show'
+        get 'find_all', to: 'find#index'
+        get 'random', to: 'random#show'
       end
 
       resources :items, only: [:index, :show]
