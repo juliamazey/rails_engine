@@ -41,16 +41,18 @@ Rails.application.routes.draw do
         get 'random', to: 'random#show'
       end
 
+      namespace :customers do
+        get ':id/favorite_merchant', to: "favorite_merchant#show"
+        get 'find', to: 'find#show'
+        get 'find_all', to: 'find#index'
+        get 'random', to: 'random#show'
+      end
+
       resources :items, only: [:index, :show]
       resources :transactions, only: [:index, :show]
       resources :invoices, only: [:index, :show]
       resources :invoice_items, only: [:index, :show]
       resources :customers, only: [:index, :show]
-
-
-      namespace :customers do
-        get ':id/favorite_merchant', to: "favorite_merchant#show"
-      end
 
     end
   end
