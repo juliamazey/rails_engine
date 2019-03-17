@@ -35,6 +35,8 @@ group :development, :test do
   gem 'pry'
   gem 'simplecov'
   gem 'factory_bot_rails'
+  gem 'shoulda-matchers'
+
 end
 
 group :development do
