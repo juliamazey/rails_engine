@@ -1,4 +1,6 @@
 class Invoice < ApplicationRecord
+  enum status: ['pending', 'shipped']
+
   belongs_to :customer
   belongs_to :merchant
 
@@ -6,5 +8,7 @@ class Invoice < ApplicationRecord
   has_many :items, through: :invoice_items
   has_many :transactions
 
-  enum status: ['pending', 'shipped']
+  validates_presence_of :status
+  scope :shipped, -> {where(status: 'shipped')}
+
 end
