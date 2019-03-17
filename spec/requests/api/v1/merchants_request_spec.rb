@@ -48,12 +48,21 @@ describe "Merchants API" do
     get "/api/v1/merchants/find?created_at=#{created_at}"
 
     expect(response).to be_successful
-    expect(merchant["attributes"]["created_at"]).to eq("2012-03-27T14:53:59.000Z")
+
+    id = merchant["attributes"]["id"].to_i
+    date = Merchant.find(id).created_at
+
+    expect(date).to eq("2012-03-27T14:53:59.000Z")
+
 
     get "/api/v1/merchants/find?updated_at=#{updated_at}"
 
     expect(response).to be_successful
-    expect(merchant["attributes"]["updated_at"]).to eq("2012-03-27T14:53:59.000Z")
+
+    id = merchant["attributes"]["id"].to_i
+    date = Merchant.find(id).created_at
+    expect(date).to eq("2012-03-27T14:53:59.000Z")
+
   end
 
   it "can get all merchants matches using finders" do
@@ -76,9 +85,11 @@ describe "Merchants API" do
 
     expect(response).to be_successful
 
-    all_merchants = merchants.map {|merchant| merchant["attributes"]["created_at"]}
+    id = merchants.first["attributes"]["id"].to_i
+    date = Merchant.find(id).created_at
 
-    expect(all_merchants).to eq(["2012-03-27T14:54:05.000Z", "2012-03-27T14:54:05.000Z"])
+    expect(date).to eq("2012-03-27T14:54:05.000Z")
+
     expect(merchants.count).to eq(2)
   end
 
