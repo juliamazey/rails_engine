@@ -37,7 +37,6 @@ Rails.application.routes.draw do
         end
       end
 
-
       namespace :invoice_items do
         get 'find', to: 'find#show'
         get 'find_all', to: 'find#index'
@@ -71,6 +70,7 @@ Rails.application.routes.draw do
         get 'find', to: 'find#show'
         get 'find_all', to: 'find#index'
         get 'random', to: 'random#show'
+        get ':id/invoice', to: "invoices#show"
       end
 
       namespace :customers do

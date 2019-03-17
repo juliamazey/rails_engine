@@ -123,4 +123,15 @@ describe "Transactions API" do
     expect(transactions_ids).to include(transaction["attributes"]["id"])
   end
 
+  it "can return the associated invoice for a transaction" do
+
+    get "/api/v1/transactions/#{@transaction_1.id}/invoice"
+
+    expect(response).to be_successful
+
+    invoice = JSON.parse(response.body)["data"]
+
+    expect(invoice["attributes"]["id"]).to eq(@transaction_1.invoice_id)
+  end
+
 end
