@@ -1,7 +1,7 @@
 class Api::V1::Merchants::RandomController < ApplicationController
 
   def show
-    render json: Merchant.all.sample
+    render json: MerchantSerializer.new(Merchant.take)
   end
 
 end
