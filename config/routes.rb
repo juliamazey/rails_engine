@@ -80,9 +80,15 @@ Rails.application.routes.draw do
         get 'random', to: 'random#show'
       end
 
+      resources :customers, only: [:index, :show] do
+        scope module: :customers do
+          resources :invoices, only: [:index]
+          resources :transactions, only: [:index]
+        end
+      end
+
       resources :transactions, only: [:index, :show]
       resources :invoices, only: [:index, :show]
-      resources :customers, only: [:index, :show]
 
     end
   end
