@@ -83,7 +83,7 @@ describe "Customers API" do
 
     expect(response).to be_successful
 
-    all_customers = customers.map {|io| io["attributes"]["created_at"]}
+    all_customers = customers.map {|customer| customer["attributes"]["created_at"]}
 
     expect(all_customers).to eq(["2012-03-27T14:54:09.000Z"])
     expect(customers.count).to eq(1)
@@ -99,6 +99,43 @@ describe "Customers API" do
 
     expect(response).to be_successful
     expect(customers_ids).to include(customer["attributes"]["id"])
+  end
+
+  it "can return invoices associated with a customer" do
+    invoices = create_list(:invoice, 4, customer: @customer_1)
+    invoices_ids = invoices.map { |invoice| invoice.id}
+
+    get "/api/v1/customers/#{@customer_1.id}/invoices"
+    customer_invoices = JSON.parse(response.body)["data"]
+
+    expect(response).to be_successful
+    expect(customer_invoices.count).to eq(4)
+
+    c_i_ids = customer_invoices.map { |invoice| invoice["attributes"]["id"] }
+
+    expect(invoices_ids).to eq(c_i_ids)
+  end
+
+  it "can return transactions associated with a customer" do
+    invoice_1 = create(:invoice, customer_id: @customer_1.id)
+
+    transaction_1 = create(:transaction, invoice_id: invoice_1.id)
+    transaction_2 = create(:transaction, invoice_id: invoice_1.id)
+    transaction_3 = create(:transaction, invoice_id: invoice_1.id)
+
+    transactions = [transaction_1, transaction_2, transaction_3]
+
+    transactions_ids = transactions.map { |transaction| transaction.id}
+
+    get "/api/v1/customers/#{@customer_1.id}/transactions"
+    customer_transactions = JSON.parse(response.body)["data"]
+
+    expect(response).to be_successful
+    expect(customer_transactions.count).to eq(3)
+
+    i_t_ids = customer_transactions.map { |transaction| transaction["attributes"]["id"] }
+
+    expect(transactions_ids).to eq(i_t_ids)
   end
 
 end

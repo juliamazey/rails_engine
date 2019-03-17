@@ -98,7 +98,7 @@ describe "Invoices API" do
 
     expect(response).to be_successful
 
-    all_invoices = invoices.map {|io| io["attributes"]["created_at"]}
+    all_invoices = invoices.map {|invoice| invoice["attributes"]["created_at"]}
 
     expect(all_invoices).to eq(["2012-03-25T09:54:09.000Z"])
     expect(invoices.count).to eq(1)
@@ -114,6 +114,84 @@ describe "Invoices API" do
 
     expect(response).to be_successful
     expect(invoices_ids).to include(invoice["attributes"]["id"])
+  end
+
+  it "can return transactions associated with an invoice" do
+    transactions = create_list(:transaction, 4, invoice: @invoice_1)
+    transactions_ids = transactions.map { |transaction| transaction.id}
+
+    get "/api/v1/invoices/#{@invoice_1.id}/transactions"
+    invoice_transactions = JSON.parse(response.body)["data"]
+
+    expect(response).to be_successful
+    expect(invoice_transactions.count).to eq(4)
+
+    i_t_ids = invoice_transactions.map { |transaction| transaction["attributes"]["id"] }
+
+    expect(transactions_ids).to eq(i_t_ids)
+  end
+
+  it "can return invoice items associated with an invoice" do
+    invoice_items = create_list(:invoice_item, 4, invoice_id: @invoice_1.id)
+
+    invoice_items_ids = invoice_items.map { |ii| ii.id}
+
+    get "/api/v1/invoices/#{@invoice_1.id}/invoice_items"
+    invoice_items = JSON.parse(response.body)["data"]
+
+    expect(response).to be_successful
+    expect(invoice_items.count).to eq(4)
+
+    m_i_ids = invoice_items.map { |ii| ii["attributes"]["id"] }
+
+    expect(invoice_items_ids).to eq(m_i_ids)
+  end
+
+  it "can return items associated with an invoice" do
+    item_1 = create(:item, id: 1)
+    item_2 = create(:item, id: 2)
+    item_3 = create(:item, id: 3)
+
+    items = [item_1, item_2, item_3]
+
+    invoice_item_1 = create(:invoice_item, invoice_id: @invoice_1.id, item_id: item_1.id)
+    invoice_item_2 = create(:invoice_item, invoice_id: @invoice_1.id, item_id: item_2.id)
+    invoice_item_3 = create(:invoice_item, invoice_id: @invoice_1.id, item_id: item_3.id)
+
+    items_ids = items.map { |item| item.id}
+
+    get "/api/v1/invoices/#{@invoice_1.id}/items"
+    invoice_items = JSON.parse(response.body)["data"]
+
+    expect(response).to be_successful
+    expect(invoice_items.count).to eq(3)
+
+    i_i_ids = invoice_items.map { |ii| ii["attributes"]["id"] }
+
+    expect(items_ids).to eq(i_i_ids)
+  end
+
+  it "can return the associated customer for an invoice" do
+
+    get "/api/v1/invoices/#{@invoice_1.id}/customer"
+
+    expect(response).to be_successful
+
+    customer = JSON.parse(response.body)["data"]
+
+    expect(customer["attributes"]["id"]).to eq(@invoice_1.customer_id)
+  end
+
+  it "can return the associated merchant for an invoice" do
+
+    get "/api/v1/invoices/#{@invoice_1.id}/merchant"
+
+    expect(response).to be_successful
+
+    merchant = JSON.parse(response.body)["data"]
+
+    expect(merchant["attributes"]["id"]).to eq(@invoice_1.merchant_id)
+
   end
 
 end

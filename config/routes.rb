@@ -17,6 +17,7 @@ Rails.application.routes.draw do
           get 'revenue', to: 'revenues#show'
           get 'favorite_customer', to: 'customers#show'
           resources :items, only: [:index]
+          resources :invoices, only: [:index]
         end
       end
 
@@ -29,10 +30,24 @@ Rails.application.routes.draw do
         get ':id/best_day', to: "best_day#show"
       end
 
+      resources :items, only: [:index, :show] do
+        scope module: :items do
+          resources :invoice_items, only: [:index]
+          get 'merchant', to: 'merchants#show'
+        end
+      end
+
       namespace :invoice_items do
         get 'find', to: 'find#show'
         get 'find_all', to: 'find#index'
         get 'random', to: 'random#show'
+      end
+
+      resources :invoice_items, only: [:index, :show] do
+        scope module: :invoice_items do
+          get 'invoice', to: 'invoices#show'
+          get 'item', to: 'items#show'
+        end
       end
 
       namespace :invoices do
@@ -41,10 +56,21 @@ Rails.application.routes.draw do
         get 'random', to: 'random#show'
       end
 
+      resources :invoices, only: [:index, :show] do
+        scope module: :invoices do
+          resources :transactions, only: [:index]
+          resources :items, only: [:index]
+          resources :invoice_items, only: [:index]
+          get 'customer', to: 'customers#show'
+          get 'merchant', to: 'merchants#show'
+        end
+      end
+
       namespace :transactions do
         get 'find', to: 'find#show'
         get 'find_all', to: 'find#index'
         get 'random', to: 'random#show'
+        get ':id/invoice', to: "invoices#show"
       end
 
       namespace :customers do
@@ -54,11 +80,15 @@ Rails.application.routes.draw do
         get 'random', to: 'random#show'
       end
 
-      resources :items, only: [:index, :show]
+      resources :customers, only: [:index, :show] do
+        scope module: :customers do
+          resources :invoices, only: [:index]
+          resources :transactions, only: [:index]
+        end
+      end
+
       resources :transactions, only: [:index, :show]
       resources :invoices, only: [:index, :show]
-      resources :invoice_items, only: [:index, :show]
-      resources :customers, only: [:index, :show]
 
     end
   end

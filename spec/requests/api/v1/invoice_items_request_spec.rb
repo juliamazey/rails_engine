@@ -113,7 +113,7 @@ describe "Invoice Items API" do
 
     expect(response).to be_successful
 
-    all_invoice_items = invoice_items.map {|io| io["attributes"]["created_at"]}
+    all_invoice_items = invoice_items.map {|ii| ii["attributes"]["created_at"]}
 
     expect(all_invoice_items).to eq(["2012-03-27T14:54:09.000Z", "2012-03-27T14:54:09.000Z", "2012-03-27T14:54:09.000Z", "2012-03-27T14:54:09.000Z"])
     expect(invoice_items.count).to eq(4)
@@ -129,6 +129,29 @@ describe "Invoice Items API" do
 
     expect(response).to be_successful
     expect(items_names).to include(item["attributes"]["name"])
+  end
+
+  it "can return the associated invoice for an invoice item" do
+
+    get "/api/v1/invoice_items/#{@invoice_item_1.id}/invoice"
+
+    expect(response).to be_successful
+
+    invoice = JSON.parse(response.body)["data"]
+
+    expect(invoice["attributes"]["id"]).to eq(@invoice_item_1.invoice_id)
+  end
+
+  it "can return the associated item for an invoice item" do
+
+    get "/api/v1/invoice_items/#{@invoice_item_1.id}/item"
+
+    expect(response).to be_successful
+
+    item = JSON.parse(response.body)["data"]
+
+    expect(item["attributes"]["id"]).to eq(@invoice_item_1.item_id)
+
   end
 
 end
