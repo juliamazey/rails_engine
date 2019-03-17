@@ -113,4 +113,20 @@ describe "Merchants API" do
     expect(items_names).to eq(m_i_names)
   end
 
+  it "can return invoices associated with a merchant" do
+    merchant = create(:merchant, id: 64, name: "Koepp, Waelchi and Donnelly", created_at: "2012-03-27 14:54:05 UTC", updated_at: "2012-03-27 14:54:05 UTC")
+    invoices = create_list(:invoice, 4, merchant: merchant)
+    invoices_ids = invoices.map { |invoice| invoice.id}
+
+    get "/api/v1/merchants/#{merchant.id}/invoices"
+    merchant_invoices = JSON.parse(response.body)["data"]
+
+    expect(response).to be_successful
+    expect(merchant_invoices.count).to eq(4)
+
+    m_i_ids = merchant_invoices.map { |invoice| invoice["attributes"]["id"] }
+
+    expect(invoices_ids).to eq(m_i_ids)
+  end
+
 end
