@@ -30,6 +30,14 @@ Rails.application.routes.draw do
         get ':id/best_day', to: "best_day#show"
       end
 
+      resources :items, only: [:index, :show] do
+        scope module: :items do
+          resources :invoice_items, only: [:index]
+          get 'merchant', to: 'merchants#show'
+        end
+      end
+
+
       namespace :invoice_items do
         get 'find', to: 'find#show'
         get 'find_all', to: 'find#index'
@@ -72,7 +80,6 @@ Rails.application.routes.draw do
         get 'random', to: 'random#show'
       end
 
-      resources :items, only: [:index, :show]
       resources :transactions, only: [:index, :show]
       resources :invoices, only: [:index, :show]
       resources :customers, only: [:index, :show]

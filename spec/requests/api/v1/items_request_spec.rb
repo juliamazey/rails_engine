@@ -12,10 +12,6 @@ describe "Items API" do
   end
 
   it "sends a list of items" do
-    # create(:merchant, id: 64, name: "Koepp, Waelchi and Donnelly", created_at: "2012-03-27 14:54:05 UTC", updated_at: "2012-03-27 14:54:05 UTC")
-    # create(:merchant, id: 5, name: "Williamson Group", created_at: "2012-03-27 14:53:59 UTC", updated_at: "2012-03-27 14:53:59 UTC")
-    # create(:merchant, id: 75, name: "Eichmann-Turcotte", created_at: "2012-03-27 14:54:06 UTC", updated_at: "2012-03-27 14:54:06 UTC")
-    # create(:merchant, id: 43, name: "Marks, Shanahan and Bauch", created_at: "2012-03-27 14:54:03 UTC", updated_at: "2012-03-27 14:54:03 UTC")
 
     get '/api/v1/items'
 
@@ -115,5 +111,39 @@ describe "Items API" do
     expect(response).to be_successful
     expect(items_names).to include(item["attributes"]["name"])
   end
+
+  it "can return invoice items associated with an item" do
+
+    invoice_item_1 = create(:invoice_item, item_id: @item_1.id)
+    invoice_item_2 = create(:invoice_item, item_id: @item_1.id)
+    invoice_item_3 = create(:invoice_item, item_id: @item_1.id)
+
+    invoice_items = [invoice_item_1, invoice_item_2, invoice_item_3]
+
+    invoice_items_ids = invoice_items.map { |ii| ii.id}
+
+    get "/api/v1/items/#{@item_1.id}/invoice_items"
+    invoice_items = JSON.parse(response.body)["data"]
+
+    expect(response).to be_successful
+    expect(invoice_items.count).to eq(3)
+
+    i_i_ids = invoice_items.map { |ii| ii["attributes"]["id"] }
+
+    expect(invoice_items_ids).to eq(i_i_ids)
+  end
+
+  it "can return the associated merchant for an item" do
+
+    get "/api/v1/items/#{@item_1.id}/merchant"
+
+    expect(response).to be_successful
+
+    merchant = JSON.parse(response.body)["data"]
+
+    expect(merchant["attributes"]["id"]).to eq(@item_1.merchant_id)
+  end
+
+
 
 end
