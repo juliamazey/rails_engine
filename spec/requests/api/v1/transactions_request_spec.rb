@@ -49,7 +49,7 @@ describe "Transactions API" do
   it "can get one transaction using finders" do
     id = @transaction_1.id
     invoice_id = @transaction_1.invoice_id
-    credit_card_number = @transaction_1.credit_card_number
+    credit_card_number = @transaction_1.credit_card_number.to_s
     result = @transaction_1.result
     created_at = @transaction_1.created_at
     updated_at = @transaction_1.updated_at
@@ -79,12 +79,19 @@ describe "Transactions API" do
     get "/api/v1/transactions/find?created_at=#{created_at}"
 
     expect(response).to be_successful
-    expect(transaction["attributes"]["created_at"]).to eq("2012-03-27T14:54:09.000Z")
+
+    id = transaction["attributes"]["id"].to_i
+    date = Transaction.find(id).created_at
+
+    expect(date).to eq("2012-03-27T14:54:09.000Z")
 
     get "/api/v1/transactions/find?updated_at=#{updated_at}"
 
     expect(response).to be_successful
-    expect(transaction["attributes"]["updated_at"]).to eq("2012-03-27T14:54:09.000Z")
+
+    id = transaction["attributes"]["id"].to_i
+    date = Transaction.find(id).created_at
+    expect(date).to eq("2012-03-27T14:54:09.000Z")
 
   end
 
@@ -105,9 +112,11 @@ describe "Transactions API" do
 
     expect(response).to be_successful
 
-    all_transactions = transactions.map {|transaction| transaction["attributes"]["created_at"]}
+    id = transactions.first["attributes"]["id"].to_i
+    date = Transaction.find(id).created_at
 
-    expect(all_transactions).to eq(["2012-03-27T14:54:09.000Z", "2012-03-27T14:54:09.000Z"])
+    expect(date).to eq("2012-03-27T14:54:09.000Z")
+
     expect(transactions.count).to eq(2)
   end
 

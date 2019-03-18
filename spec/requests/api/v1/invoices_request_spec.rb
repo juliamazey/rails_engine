@@ -72,12 +72,18 @@ describe "Invoices API" do
     get "/api/v1/invoices/find?name=#{created_at}"
 
     expect(response).to be_successful
-    expect(invoice["attributes"]["created_at"]).to eq("2012-03-25T09:54:09.000Z")
+
+    id = invoice["attributes"]["id"].to_i
+    date = Invoice.find(id).created_at
+    expect(date).to eq("2012-03-25T09:54:09.000Z")
 
     get "/api/v1/invoices/find?created_at=#{updated_at}"
 
     expect(response).to be_successful
-    expect(invoice["attributes"]["updated_at"]).to eq("2012-03-25T09:54:09.000Z")
+
+    id = invoice["attributes"]["id"].to_i
+    date = Invoice.find(id).created_at
+    expect(date).to eq("2012-03-25T09:54:09.000Z")
 
   end
 
@@ -98,9 +104,11 @@ describe "Invoices API" do
 
     expect(response).to be_successful
 
-    all_invoices = invoices.map {|invoice| invoice["attributes"]["created_at"]}
+    id = invoices.first["attributes"]["id"].to_i
+    date = Invoice.find(id).created_at
 
-    expect(all_invoices).to eq(["2012-03-25T09:54:09.000Z"])
+    expect(date).to eq("2012-03-25T09:54:09.000Z")
+
     expect(invoices.count).to eq(1)
   end
 

@@ -7,15 +7,16 @@ Rails.application.routes.draw do
         get 'find', to: 'find#show'
         get 'find_all', to: 'find#index'
         get 'random', to: 'random#show'
-        get 'most_revenue', to: 'most_revenues#index'
+        get 'most_revenue', to: 'most_revenue#index'
         get 'most_items', to: 'most_items#index'
-        get 'revenue', to: 'revenues#index'
+        get 'revenue', to: 'revenue_date#show'
       end
 
       resources :merchants, only: [:index, :show] do
         scope module: :merchants do
-          get 'revenue', to: 'revenues#show'
+          get 'revenue', to: 'revenue#show'
           get 'favorite_customer', to: 'customers#show'
+          get 'customers_with_pending_invoices', to: 'customers#index'
           resources :items, only: [:index]
           resources :invoices, only: [:index]
         end
@@ -72,6 +73,7 @@ Rails.application.routes.draw do
         get 'random', to: 'random#show'
         get ':id/invoice', to: "invoices#show"
       end
+      resources :transactions, only: [:index, :show]
 
       namespace :customers do
         get ':id/favorite_merchant', to: "favorite_merchant#show"
@@ -86,9 +88,6 @@ Rails.application.routes.draw do
           resources :transactions, only: [:index]
         end
       end
-
-      resources :transactions, only: [:index, :show]
-      resources :invoices, only: [:index, :show]
 
     end
   end

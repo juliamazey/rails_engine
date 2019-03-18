@@ -41,9 +41,9 @@ describe "Invoice Items API" do
     expect(invoice_items.count).to eq(4)
   end
 
-  it "can get one item by its id" do
+  it "can get one invoice item by its id" do
 
-    get "/api/v1/items/#{@invoice_item_1.id}"
+    get "/api/v1/invoice_items/#{@invoice_item_1.id}"
     invoice_item = JSON.parse(response.body)["data"]
 
     expect(response).to be_successful
@@ -55,7 +55,7 @@ describe "Invoice Items API" do
     item_id = @invoice_item_1.item_id
     invoice_id = @invoice_item_1.invoice_id
     quantity = @invoice_item_1.quantity
-    unit_price = @invoice_item_1.unit_price
+    unit_price = "136.35"
     created_at = @invoice_item_1.created_at
     updated_at = @invoice_item_1.updated_at
 
@@ -88,15 +88,24 @@ describe "Invoice Items API" do
     get "/api/v1/invoice_items/find?created_at=#{created_at}"
 
     expect(response).to be_successful
-    expect(invoice_item["attributes"]["created_at"]).to eq("2012-03-27T14:54:09.000Z")
+    id = invoice_item["attributes"]["id"].to_i
+    date = InvoiceItem.find(id).created_at
+
+    expect(date).to eq("2012-03-27T14:54:09.000Z")
 
     get "/api/v1/invoice_items/find?updated_at=#{updated_at}"
 
     expect(response).to be_successful
-    expect(invoice_item["attributes"]["updated_at"]).to eq("2012-03-27T14:54:09.000Z")
-  end
+    id = invoice_item["attributes"]["id"].to_i
+    date = InvoiceItem.find(id).created_at
+
+    expect(date).to eq("2012-03-27T14:54:09.000Z")
+    end
 
   it "can get all invoice items matches using finders" do
+
+    get "/api/v1/invoice_items/find_all?unit_price=#{@invoice_item_2.unit_price}"
+
 
     get "/api/v1/invoice_items/find_all?quantity=#{@invoice_item_2.quantity}"
 
@@ -113,22 +122,24 @@ describe "Invoice Items API" do
 
     expect(response).to be_successful
 
-    all_invoice_items = invoice_items.map {|ii| ii["attributes"]["created_at"]}
+    id = invoice_items.first["attributes"]["id"].to_i
+    date = InvoiceItem.find(id).created_at
 
-    expect(all_invoice_items).to eq(["2012-03-27T14:54:09.000Z", "2012-03-27T14:54:09.000Z", "2012-03-27T14:54:09.000Z", "2012-03-27T14:54:09.000Z"])
+    expect(date).to eq("2012-03-27T14:54:09.000Z")
+
     expect(invoice_items.count).to eq(4)
   end
 
   it "can return a random resource" do
 
-    items_names = [@item_1.name, @item_2.name, @item_3.name]
+    invoice_items_ids = [@invoice_item_1.id, @invoice_item_2.id, @invoice_item_3.id]
 
-    get "/api/v1/items/random"
+    get "/api/v1/invoice_items/random"
 
-    item = JSON.parse(response.body)["data"]
+    invoice_item = JSON.parse(response.body)["data"]
 
     expect(response).to be_successful
-    expect(items_names).to include(item["attributes"]["name"])
+    expect(invoice_items_ids).to include(invoice_item["attributes"]["id"])
   end
 
   it "can return the associated invoice for an invoice item" do

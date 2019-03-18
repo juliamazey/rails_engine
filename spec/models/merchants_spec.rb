@@ -47,11 +47,11 @@ RSpec.describe Merchant, type: :model do
   end
   describe 'class methods' do
     it '.top_by_revenue' do
-      expect(Merchant.top_by_revenue).to eq([@merchant_2, @merchant_3, @merchant_1])
+      expect(Merchant.top_by_revenue(3)).to eq([@merchant_2, @merchant_3, @merchant_1])
     end
 
     it '.top_by_items_sold' do
-      expect(Merchant.top_by_items_sold).to eq([@merchant_2, @merchant_1, @merchant_3])
+      expect(Merchant.top_by_items_sold(3)).to eq([@merchant_2, @merchant_1, @merchant_3])
     end
 
     it '.total_revenue_by_date' do
@@ -76,5 +76,14 @@ RSpec.describe Merchant, type: :model do
     it 'favorite_customer' do
       expect(@merchant_1.favorite_customer).to eq(@customer_2)
     end
+
+    # it '.pending_invoices' do
+    #
+    #   invoice = create(:invoice, merchant_id: @merchant_1.id, customer_id: @customer_1.id)
+    #
+    #   transaction = create(:transaction, invoice_id: invoice.id, result: "failed")
+    #
+    #   expect(Customer.pending_invoices(@merchant_1.id).first).to eq(@customer_1)
+    # end
   end
 end

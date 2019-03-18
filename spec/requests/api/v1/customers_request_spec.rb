@@ -57,12 +57,18 @@ describe "Customers API" do
     get "/api/v1/customers/find?name=#{created_at}"
 
     expect(response).to be_successful
-    expect(customer["attributes"]["created_at"]).to eq("2012-03-27T14:54:09.000Z")
+
+    id = customer["attributes"]["id"].to_i
+    date = Customer.find(id).created_at
+    expect(date).to eq("2012-03-27T14:54:09.000Z")
 
     get "/api/v1/customers/find?created_at=#{updated_at}"
 
     expect(response).to be_successful
-    expect(customer["attributes"]["updated_at"]).to eq("2012-03-27T14:54:09.000Z")
+
+    id = customer["attributes"]["id"].to_i
+    date = Customer.find(id).updated_at
+    expect(date).to eq("2012-03-27T14:54:09.000Z")
 
   end
 
@@ -83,9 +89,11 @@ describe "Customers API" do
 
     expect(response).to be_successful
 
-    all_customers = customers.map {|customer| customer["attributes"]["created_at"]}
+    id = customers.first["attributes"]["id"].to_i
 
-    expect(all_customers).to eq(["2012-03-27T14:54:09.000Z"])
+    date = Customer.find(id).created_at
+
+    expect(date).to eq("2012-03-27T14:54:09.000Z")
     expect(customers.count).to eq(1)
   end
 
@@ -133,9 +141,9 @@ describe "Customers API" do
     expect(response).to be_successful
     expect(customer_transactions.count).to eq(3)
 
-    i_t_ids = customer_transactions.map { |transaction| transaction["attributes"]["id"] }
+    c_t_ids = customer_transactions.map { |transaction| transaction["attributes"]["id"] }
 
-    expect(transactions_ids).to eq(i_t_ids)
+    expect(transactions_ids).to eq(c_t_ids)
   end
 
 end

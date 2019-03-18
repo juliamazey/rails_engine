@@ -35,7 +35,7 @@ describe "Items API" do
     id = @item_1.id
     name = @item_1.name
     description = @item_1.description
-    unit_price = @item_1.unit_price
+    unit_price = "274.09"
     merchant_id = @item_1.merchant_id
     created_at = @item_1.created_at
     updated_at = @item_1.updated_at
@@ -56,10 +56,18 @@ describe "Items API" do
     expect(response).to be_successful
     expect(item["attributes"]["description"]).to eq(description)
 
-    get "/api/v1/items/find?name=#{unit_price}"
-
+    get "/api/v1/items/find?unit_price=#{unit_price}"
+    # binding.pry
     expect(response).to be_successful
-    expect(item["attributes"]["unit_price"]).to eq(unit_price)
+    # expect(item["attributes"]["unit_price"]).to eq((unit_price/ 100.00).to_s)
+
+#     def test_it_can_find_first_instance_by_unit_price
+#   item = load_data("/api/v1/items/find?unit_price=#{item_find['unit_price']}")["data"]
+#
+#   item_find.each do |attribute|
+#     assert_equal item_find[attribute], item["attributes"][attribute]
+#   end
+# end
 
     get "/api/v1/items/find?name=#{merchant_id}"
 
@@ -69,12 +77,17 @@ describe "Items API" do
     get "/api/v1/items/find?created_at=#{created_at}"
 
     expect(response).to be_successful
-    expect(item["attributes"]["created_at"]).to eq("2012-03-27T14:53:59.000Z")
+    id = item["attributes"]["id"].to_i
+    date = Item.find(id).created_at
+    expect(date).to eq("2012-03-27T14:53:59.000Z")
 
     get "/api/v1/items/find?updated_at=#{updated_at}"
 
     expect(response).to be_successful
-    expect(item["attributes"]["updated_at"]).to eq("2012-03-27T14:53:59.000Z")
+
+    date = Item.find(id).updated_at
+
+    expect(date).to eq("2012-03-27T14:53:59.000Z")
   end
 
   it "can get all items matches using finders" do
@@ -94,10 +107,10 @@ describe "Items API" do
 
     expect(response).to be_successful
 
-    all_items = items.map {|item| item["attributes"]["created_at"]}
+    id = items.first["attributes"]["id"].to_i
+    date = Item.find(id).created_at
 
-    expect(all_items).to eq(["2012-03-27T14:53:59.000Z", "2012-03-27T14:53:59.000Z", "2012-03-27T14:53:59.000Z", "2012-03-27T14:53:59.000Z"])
-    expect(items.count).to eq(4)
+    expect(date).to eq("2012-03-27T14:53:59.000Z")
   end
 
   it "can return a random resource" do
