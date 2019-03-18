@@ -1,24 +1,27 @@
 # README
+### Rails Engine
+This is a one week long, solo project where we use Rails and ActiveRecord to build a JSON API which exposes the SalesEngine data schema.
+Here is the [project description](http://backend.turing.io/module3/projects/rails_engine). In the project I have used the gem  Fast JSON:API, which complies with the the [JSON:API specifications](https://jsonapi.org/). 
+### Installation
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+You can install the application by cloning it
 
-Things you may want to cover:
+```
+$ git clone https://github.com/juliamarco/rails_engine.git
+$ cd rails_engine
+$ bundle install
+```
 
-* Ruby version
+Then set up the database
 
-* System dependencies
+```
+rails db:{create,migrate}
+```
 
-* Configuration
+Import the data from the csv files
+inside "/lib/tasks/import.rake" you will see the different tasks to upload each file. E.g.:
 
-* Database creation
+```
+rake import:invoices
+```
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
