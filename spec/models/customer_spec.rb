@@ -52,5 +52,7 @@ RSpec.describe Customer, type: :model do
       id = @customer_2.id
       expect(Merchant.favorite_merchant(id)).to eq(@merchant_1)
     end
+
+
   end
 end

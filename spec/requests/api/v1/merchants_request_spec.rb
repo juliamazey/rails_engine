@@ -121,7 +121,6 @@ describe "Merchants API" do
     expect(response).to be_successful
     expect(merchant_items.count).to eq(4)
 
-
     expect(merchant_items_names).to eq(true)
   end
 
@@ -140,5 +139,6 @@ describe "Merchants API" do
 
     expect(invoices_ids).to eq(m_i_ids)
   end
+
 
 end

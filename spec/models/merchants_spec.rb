@@ -77,5 +77,13 @@ RSpec.describe Merchant, type: :model do
       expect(@merchant_1.favorite_customer).to eq(@customer_2)
     end
 
+    # it '.pending_invoices' do
+    #
+    #   invoice = create(:invoice, merchant_id: @merchant_1.id, customer_id: @customer_1.id)
+    #
+    #   transaction = create(:transaction, invoice_id: invoice.id, result: "failed")
+    #
+    #   expect(Customer.pending_invoices(@merchant_1.id).first).to eq(@customer_1)
+    # end
   end
 end

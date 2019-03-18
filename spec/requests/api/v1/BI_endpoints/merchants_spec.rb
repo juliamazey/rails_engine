@@ -113,4 +113,18 @@ describe 'Merchants Business Intelligence API' do
     expect(customer["id"].to_i).to eq(@customer_2.id)
   end
 
+  # it 'returns a collection of customers which have pending (unpaid) invoices' do
+  #
+  #   invoice = create(:invoice, merchant_id: @merchant_1.id, customer_id: @customer_1.id)
+  #   transaction = create(:transaction, invoice_id: invoice.id, result: "failed")
+  #
+  #   get "/api/v1/merchants/#{@merchant_1.id}/customers_with_pending_invoices"
+  #
+  #   expect(response).to be_successful
+  #
+  #   customer = JSON.parse(response.body)["data"]
+  #
+  #   expect(customer["id"].to_i).to eq(@customer_1.id)
+  #
+  # end
 end
