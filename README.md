@@ -1,27 +1,47 @@
-# README
-### Rails Engine
-This is a one week long, solo project where we use Rails and ActiveRecord to build a JSON API which exposes the SalesEngine data schema.
-Here is the [project description](http://backend.turing.io/module3/projects/rails_engine). In the project I have used the gem  Fast JSON:API, which complies with the the [JSON:API specifications](https://jsonapi.org/). 
-### Installation
+# Rails Engine
 
-You can install the application by cloning it
+Rails engine implements a [JSON API](https://jsonapi.org/) that uses various business intelligent queries to retrieve data based off of [SalesEngine CSV data](https://github.com/turingschool-examples/sales_engine/tree/master/data).
 
-```
-$ git clone https://github.com/juliamarco/rails_engine.git
-$ cd rails_engine
-$ bundle install
-```
 
-Then set up the database
 
-```
-rails db:{create,migrate}
-```
+# Dependencies
 
-Import the data from the csv files
-inside "/lib/tasks/import.rake" you will see the different tasks to upload each file. E.g.:
+- Ruby 
+- Rails
+- PostgreSQL
 
-```
-rake import:invoices
-```
+# Getting Started
 
+Clone the repo, bundle to automate dependency requirements for the project and create and migrate the database
+
+    git clone https://github.com/juliamarco/rails_engine
+    cd rails_engine
+    bundle
+    rake db:{create,migrate}
+
+Load the CSV data
+
+    rake import:{invoices,items,merchants,transactions,customers,invoiceitems}
+
+To start the application run 'rails s'
+
+    rails s
+
+The application runs on port 3000. It provides a Restful collection of API endpoints for all records. All possible endpoints can be found in the project description [here](http://backend.turing.io/module3/projects/rails_engine). One example to retrieve data would be:
+    `http://localhost:3000/api/v1/merchants/random`
+
+
+# Testing
+
+To run the full test suite, run the following command:
+
+    rake spec
+
+# Built Using
+
+- [Ruby on Rails Framework](https://rubyonrails.org/)
+- [FastJsonapi](https://github.com/Netflix/fast_jsonapi)
+
+# Created By
+
+- [Julia Marco](https://github.com/juliamarco)
